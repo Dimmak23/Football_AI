@@ -149,6 +149,11 @@
   <ItemGroup>
     <ClCompile Include="win32_platform.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="typenames.h" />
+    <ClInclude Include="utilities.h" />
+    <ClInclude Include="renderer.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
