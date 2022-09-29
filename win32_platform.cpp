@@ -5,23 +5,8 @@
 #include "renderer.h"
 #include "utilities.h"
 #include "typenames.h"
-
-static struct Render_State
-{
-	int height, width;
-	void* memory;
-	BITMAPINFO bitmap_info;
-
-} render_state;
-
-static bool gameIsRunning = true;
-
-/*
-The BITMAPINFOHEADER structure contains information
-about the dimensions and color format
-of a device-independent bitmap (DIB).
-*/
-//BITMAPINFO render_state.bitmap_info;
+#include "platform_commands.h"
+#include "game_play.h"
 
 LRESULT window_callback(
 	HWND hwnd,
@@ -45,6 +30,7 @@ LRESULT window_callback(
 )
 {
 	LRESULT result = 0;
+
 	switch (uMsg) {
 		case WM_CLOSE:
 		case WM_DESTROY:
@@ -154,18 +140,18 @@ int WINAPI WinMain(
 
 	//#3. Create a window
 	HWND window = CreateWindowA(
-		/*lpClassName*/		window_class.lpszClassName,			//A null-terminated string or a class atom created by a previous call to the RegisterClass or RegisterClassEx function.
-		/*lpWindowName*/	"Game Ping-Pong, produced by Dimmak (c).",					//The window name.
-		/*dwStyle*/			WS_OVERLAPPEDWINDOW | WS_VISIBLE,	//The style of the window being created.
-		/*x*/				CW_USEDEFAULT,						//The initial horizontal position of the window. 
-		/*y*/				CW_USEDEFAULT,						//The initial vertical position of the window.
-		/*nWidth*/			1280,								//The width, in device units, of the window. 
-		/*nHeight*/			720,								//The height, in device units, of the window. 
-		/*hWndParent*/		0,									//A handle to the parent or owner window of the window being created.
-		/*hMenu*/			0,									//A handle to a menu, or specifies a child-window identifier depending on the window style. 
-		/*hInstance*/		hInstance,							//A handle to the instance of the module to be associated with the window.
-		/*lpParam*/			0									//A pointer to a value to be passed to the window through the CREATESTRUCT structure
-																//(lpCreateParams member) pointed to by the lParam param of the WM_CREATE message. 
+		/*lpClassName*/		window_class.lpszClassName,					//A null-terminated string or a class atom created by a previous call to the RegisterClass or RegisterClassEx function.
+		/*lpWindowName*/	"Game Ping-Pong, produced by Dimmak (c).",	//The window name.
+		/*dwStyle*/			WS_OVERLAPPEDWINDOW | WS_VISIBLE,			//The style of the window being created.
+		/*x*/				CW_USEDEFAULT,								//The initial horizontal position of the window. 
+		/*y*/				CW_USEDEFAULT,								//The initial vertical position of the window.
+		/*nWidth*/			1280,										//The INITIAL width, in device units, of the window. 
+		/*nHeight*/			720,										//The INITIAL height, in device units, of the window. 
+		/*hWndParent*/		0,											//A handle to the parent or owner window of the window being created.
+		/*hMenu*/			0,											//A handle to a menu, or specifies a child-window identifier depending on the window style. 
+		/*hInstance*/		hInstance,									//A handle to the instance of the module to be associated with the window.
+		/*lpParam*/			0											//A pointer to a value to be passed to the window through the CREATESTRUCT structure
+																		//(lpCreateParams member) pointed to by the lParam param of the WM_CREATE message. 
 	);
 
 	/*
@@ -174,10 +160,34 @@ int WINAPI WinMain(
 	*/
 	HDC hdc = GetDC(window);
 
+	user_keyboard.buttons.resize(BUTTON_COUNT);
+
+	//variable to measure how much time is spend on a frame
+	float delta_time = 0.016666f; // for the first frame we assume it's gonna be 60 frame/sec
+
+	//Get CPU time
+	LARGE_INTEGER frame_begin_time{};
+	QueryPerformanceCounter(&frame_begin_time); // here we start to calculate time in the CPU units
+
+	float perfomance_frequancy{};
+	{
+		LARGE_INTEGER perf{};
+		QueryPerformanceFrequency(&perf);
+		perfomance_frequancy = static_cast<float>(perf.QuadPart); // this return how mane cycles in one second
+	}
+
+	//#4. Loop the game
 	while (gameIsRunning)
 	{
 		//Input
 		MSG message;
+
+		for (auto& every_button: user_keyboard.buttons)
+		{
+			every_button.changed = false;
+		}
+
+		//Dispatches incoming nonqueued messages, checks the thread message queue for a posted message, and retrieves the message (if any exist).
 		while (PeekMessage(
 			/*LPMSG lpMsg*/				&message,					//A pointer to an MSG structure that receives message information.
 			/*HWND  hWnd*/				window,						//A handle to the window whose messages are to be retrieved.
@@ -187,48 +197,70 @@ int WINAPI WinMain(
 			/*UINT  wRemoveMsg*/		PM_REMOVE					//Specifies how messages are to be handled.
 		))
 		{
-			/*
-			Translates virtual - key messages into character messages.
-			The character messages are posted to the calling thread's
-			message queue, to be read the next time the thread calls
-			the GetMessage or PeekMessage function.
-			*/
-			TranslateMessage(
-			/*const MSG * lpMsg*/		&message					//A pointer to an MSG structure that contains message information
-																	//retrieved from the calling thread's message queue by using the GetMessage or PeekMessage function.
-			);
+			u32 vkey_code = static_cast<u32>(message.wParam); //Need to know what key the user press
+			//bool variable checked if it's a down key
+			bool is_down_key = !(message.lParam & (1<<31));
+			
+			//Let's proceed response from user:
+			switch (message.message)
+			{
 
-			/*
-			Dispatches a message to a window procedure.
-			It is typically used to dispatch a message retrieved
-			by the GetMessage function.
-			*/
-			DispatchMessage(
-			/*const MSG * lpMsg*/		&message					//A pointer to a structure that contains the message.
-			);
+				//case WM_:{}
+				//case WM_:{}
+
+				case WM_KEYUP:
+				case WM_KEYDOWN:
+				{
+				//switch(vkey_code)
+				//{
+					//case VK_UP:
+					//if(vkey_code == VK_UP)
+					//{
+					//	user_keyboard.buttons.at(BUTTON_UP).is_down = is_down_key;
+					//	user_keyboard.buttons.at(BUTTON_UP).changed = true;
+					//}
+					/*break;*/
+					response_convert(vkey_code, is_down_key, VK_UP, user_keyboard.buttons.at(BUTTON_UP));
+					response_convert(vkey_code, is_down_key, VK_DOWN, user_keyboard.buttons.at(BUTTON_DOWN));
+					response_convert(vkey_code, is_down_key, VK_LEFT, user_keyboard.buttons.at(BUTTON_LEFT));
+					response_convert(vkey_code, is_down_key, VK_RIGHT, user_keyboard.buttons.at(BUTTON_RIGHT));
+					//case VK_DOWN:
+					//else if (vkey_code == VK_DOWN)
+					//{
+					//	user_keyboard.buttons.at(BUTTON_DOWN).is_down = is_down_key;
+					//	user_keyboard.buttons.at(BUTTON_DOWN).changed = true;
+					//}
+					/*break;*/
+					
+				//}
+				} break;
+				default:
+				{
+					/*
+					Translates virtual - key messages into character messages.
+					The character messages are posted to the calling thread's
+					message queue, to be read the next time the thread calls
+					the GetMessage or PeekMessage function.
+					*/
+					TranslateMessage(
+					/*const MSG * lpMsg*/		&message					//A pointer to an MSG structure that contains message information
+																			//retrieved from the calling thread's message queue by using the GetMessage or PeekMessage function.
+					);
+
+					/*
+					Dispatches a message to a window procedure.
+					It is typically used to dispatch a message retrieved
+					by the GetMessage function.
+					*/
+					DispatchMessage(
+					/*const MSG * lpMsg*/		&message					//A pointer to a structure that contains the message.
+					);
+				}
+				break;
+			}
 		}
 		//Simulate
-		u32* pixel = reinterpret_cast<u32*>(render_state.memory);
-		//render_background(pixel, render_state.height, render_state.width);
-		clear_screen(pixel, render_state.height, render_state.width, 0xff0000);
-		draw_rectangle(
-			render_state.memory, 
-			0, 0, 1, 1, 
-			render_state.width, render_state.height, 
-			0x0a54d0
-		);
-		draw_rectangle(
-			render_state.memory, 
-			5, 12, 5, 5, 
-			render_state.width, render_state.height, 
-			0xca33d0
-		);
-		draw_rectangle(
-			render_state.memory, 
-			-20, -30, 2, 2, 
-			render_state.width, render_state.height, 
-			0x5235a2
-		);
+		simulate_game_session(&user_keyboard, &render_state, delta_time);
 
 		//Render
 		/*
@@ -237,24 +269,31 @@ int WINAPI WinMain(
 		to the specified destination rectangle. 
 		*/
 		StretchDIBits(
-			/*[in] HDC              hdc*/			hdc,						//A handle to the destination device context.
-			/*[in] int              xDest*/			0,							//The x-coordinate, in logical units, of the upper-left corner of the destination rectangle.
-			/*[in] int              yDest*/			0,							//The y-coordinate, in logical units, of the upper-left corner of the destination rectangle.
-			/*[in] int              DestWidth*/		render_state.width,			//The width, in logical units, of the destination rectangle.
-			/*[in] int              DestHeight*/	render_state.height,		//The height, in logical units, of the destination rectangle.
-			/*[in] int              xSrc*/			0,							//The x-coordinate, in pixels, of the source rectangle in the image.
-			/*[in] int              ySrc*/			0,							//The y-coordinate, in pixels, of the source rectangle in the image.
-			/*[in] int              SrcWidth*/		render_state.width,			//The width, in pixels, of the source rectangle in the image.
-			/*[in] int              SrcHeight*/		render_state.height,		//The height, in pixels, of the source rectangle in the image.
-			/*[in] const VOID*		lpBits*/		render_state.memory,		//A pointer to the image bits, which are stored as an array of bytes.
-																				//For more information, see the Remarks section.
-			/*[in] const BITMAPINFO* lpbmi*/		&render_state.bitmap_info,	//A pointer to a BITMAPINFO structure that contains information about the DIB.
-			/*[in] UINT             iUsage*/		DIB_RGB_COLORS,				//Specifies whether the bmiColors member of the BITMAPINFO structure was provided and,
-																				//if so, whether bmiColors contains explicit red, green, blue (RGB) values or indexes. 
-			/*[in] DWORD            rop*/			SRCCOPY						//A raster-operation code that specifies how the source pixels,
-																				//the destination device context's current brush,
-																				//and the destination pixels are to be combined to form the new image. 
+		/*[in] HDC              hdc*/			hdc,									//A handle to the destination device context.
+		/*[in] int              xDest*/			0,										//The x-coordinate, in logical units, of the upper-left corner of the destination rectangle.
+		/*[in] int              yDest*/			0,										//The y-coordinate, in logical units, of the upper-left corner of the destination rectangle.
+		/*[in] int              DestWidth*/		render_state.width,	//The width, in logical units, of the destination rectangle.
+		/*[in] int              DestHeight*/	render_state.height,	//The height, in logical units, of the destination rectangle.
+		/*[in] int              xSrc*/			0,										//The x-coordinate, in pixels, of the source rectangle in the image.
+		/*[in] int              ySrc*/			0,										//The y-coordinate, in pixels, of the source rectangle in the image.
+		/*[in] int              SrcWidth*/		render_state.width,	//The width, in pixels, of the source rectangle in the image.
+		/*[in] int              SrcHeight*/		render_state.height,	//The height, in pixels, of the source rectangle in the image.
+		/*[in] const VOID*		lpBits*/		render_state.memory,					//A pointer to the image bits, which are stored as an array of bytes.
+																						//For more information, see the Remarks section.
+		/*[in] const BITMAPINFO* lpbmi*/		&render_state.bitmap_info,				//A pointer to a BITMAPINFO structure that contains information about the DIB.
+		/*[in] UINT             iUsage*/		DIB_RGB_COLORS,							//Specifies whether the bmiColors member of the BITMAPINFO structure was provided and,
+																						//if so, whether bmiColors contains explicit red, green, blue (RGB) values or indexes. 
+		/*[in] DWORD            rop*/			SRCCOPY									//A raster-operation code that specifies how the source pixels,
+																						//the destination device context's current brush,
+																						//and the destination pixels are to be combined to form the new image. 
 		);
+
+		LARGE_INTEGER frame_end_time{};
+		QueryPerformanceCounter(&frame_end_time);  // here we finish to calculate time in the CPU units
+
+		//static_cast<float>(frame_end_time.QuadPart - frame_begin_time.QuadPart) - this gives you how many cycles were spent on the current frame
+		delta_time = static_cast<float>(frame_end_time.QuadPart - frame_begin_time.QuadPart) / perfomance_frequancy; // time in seconds
+		frame_begin_time = frame_end_time; // here we start to measure delta_time of the new frame
 	}
 
 	//return MessageBox(NULL, (LPCWSTR)"hello, world", (LPCWSTR)"caption", 0);
