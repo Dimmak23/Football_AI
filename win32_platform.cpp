@@ -5,6 +5,7 @@
 #include "renderer.h"
 #include "utilities.h"
 #include "typenames.h"
+
 #include "platform_commands.h"
 #include "game_play.h"
 
@@ -140,6 +141,7 @@ int WINAPI WinMain(
 
 	//#3. Create a window
 	HWND window = CreateWindowA(
+
 		/*lpClassName*/		window_class.lpszClassName,					//A null-terminated string or a class atom created by a previous call to the RegisterClass or RegisterClassEx function.
 		/*lpWindowName*/	"Game Ping-Pong, produced by Dimmak (c).",	//The window name.
 		/*dwStyle*/			WS_OVERLAPPEDWINDOW | WS_VISIBLE,			//The style of the window being created.
@@ -152,6 +154,7 @@ int WINAPI WinMain(
 		/*hInstance*/		hInstance,									//A handle to the instance of the module to be associated with the window.
 		/*lpParam*/			0											//A pointer to a value to be passed to the window through the CREATESTRUCT structure
 																		//(lpCreateParams member) pointed to by the lParam param of the WM_CREATE message. 
+
 	);
 
 	/*
@@ -159,6 +162,7 @@ int WINAPI WinMain(
 	for the client area of a specified window or for the entire screen
 	*/
 	HDC hdc = GetDC(window);
+
 
 	user_keyboard.buttons.resize(BUTTON_COUNT);
 
@@ -177,6 +181,7 @@ int WINAPI WinMain(
 	}
 
 	//#4. Loop the game
+
 	while (gameIsRunning)
 	{
 		//Input

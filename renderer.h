@@ -78,12 +78,15 @@ static void draw_rectangle_in_pixels(void* source_memory, float initPosX, float 
 	for (int y{ static_cast<int>(initPosY) }; y < static_cast<int>(endY); y++) {
 		u32* pixel = reinterpret_cast<u32*>(source_memory) + static_cast<int>(initPosX) + y * static_cast<int>(maxWidth);
 		for (int x{ static_cast<int>(initPosX) }; x < endX; x++) {
+
 			*pixel++ = color;
 		}
 	}
 }
 
+
 static void draw_rectangle(void* source_memory, float initPosX, float initPosY, float halfSizeX, float halfSizeY, const float& maxWidth, const float& maxHeight, const u32& color) {
+
 	//Change to pixels
 	//Everything multiplied by maxHeight - size of the screen -> when we move width size - nothing change,
 	//when we move height size - game window updates
@@ -93,6 +96,7 @@ static void draw_rectangle(void* source_memory, float initPosX, float initPosY, 
 	halfSizeY *= maxHeight * render_scale;
 
 	//Let's imply logic to center sprite:
+
 	initPosX += maxWidth / 2.f;
 	initPosY += maxHeight / 2.f;
 
