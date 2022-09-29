@@ -182,10 +182,10 @@ int WINAPI WinMain(
 		//Input
 		MSG message;
 
-		for (auto& every_button: user_keyboard.buttons)
-		{
-			every_button.changed = false;
-		}
+		//for (auto& every_button: user_keyboard.buttons)
+		//{
+		//	every_button.changed = false;
+		//}
 
 		//Dispatches incoming nonqueued messages, checks the thread message queue for a posted message, and retrieves the message (if any exist).
 		while (PeekMessage(
@@ -204,35 +204,17 @@ int WINAPI WinMain(
 			//Let's proceed response from user:
 			switch (message.message)
 			{
-
 				//case WM_:{}
 				//case WM_:{}
 
 				case WM_KEYUP:
 				case WM_KEYDOWN:
 				{
-				//switch(vkey_code)
-				//{
-					//case VK_UP:
-					//if(vkey_code == VK_UP)
-					//{
-					//	user_keyboard.buttons.at(BUTTON_UP).is_down = is_down_key;
-					//	user_keyboard.buttons.at(BUTTON_UP).changed = true;
-					//}
-					/*break;*/
 					response_convert(vkey_code, is_down_key, VK_UP, user_keyboard.buttons.at(BUTTON_UP));
 					response_convert(vkey_code, is_down_key, VK_DOWN, user_keyboard.buttons.at(BUTTON_DOWN));
 					response_convert(vkey_code, is_down_key, VK_LEFT, user_keyboard.buttons.at(BUTTON_LEFT));
 					response_convert(vkey_code, is_down_key, VK_RIGHT, user_keyboard.buttons.at(BUTTON_RIGHT));
-					//case VK_DOWN:
-					//else if (vkey_code == VK_DOWN)
-					//{
-					//	user_keyboard.buttons.at(BUTTON_DOWN).is_down = is_down_key;
-					//	user_keyboard.buttons.at(BUTTON_DOWN).changed = true;
-					//}
-					/*break;*/
-					
-				//}
+
 				} break;
 				default:
 				{

@@ -27,11 +27,9 @@ static struct Input
 
 static void response_convert(const u32& key_code, const bool& key_state, const int& expected, Button_state& from_keyboard)
 {
-	//Button_state result{};
 	if (key_code == expected)
 	{
-		from_keyboard.changed = true;
+		from_keyboard.changed = (from_keyboard.is_down != key_state);
 		from_keyboard.is_down = key_state;
 	}
-	//return result;
 }
