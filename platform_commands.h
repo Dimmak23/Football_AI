@@ -1,7 +1,6 @@
 #pragma once
 
 #include <vector>
-
 #include "typenames.h"
 
 static struct Button_state
@@ -12,10 +11,17 @@ static struct Button_state
 
 enum Button_index
 {
+	//player
 	BUTTON_UP = 0,
 	BUTTON_DOWN,
 	BUTTON_LEFT,
 	BUTTON_RIGHT,
+
+	//PC
+	BUTTON_W,
+	BUTTON_S,
+	BUTTON_A,
+	BUTTON_D,
 
 	BUTTON_COUNT // would be the last item
 };
