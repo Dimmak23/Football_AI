@@ -8,6 +8,7 @@
 
 #include "platform_commands.h"
 #include "game_play.h"
+#include "game_objects.h"
 
 LRESULT window_callback(
 	HWND hwnd,
@@ -163,7 +164,7 @@ int WINAPI WinMain(
 	*/
 	HDC hdc = GetDC(window);
 
-
+	//
 	user_keyboard.buttons.resize(BUTTON_COUNT);
 
 	//variable to measure how much time is spend on a frame
@@ -215,10 +216,17 @@ int WINAPI WinMain(
 				case WM_KEYUP:
 				case WM_KEYDOWN:
 				{
+					//Collect user response to the keyboard
 					response_convert(vkey_code, is_down_key, VK_UP, user_keyboard.buttons.at(BUTTON_UP));
 					response_convert(vkey_code, is_down_key, VK_DOWN, user_keyboard.buttons.at(BUTTON_DOWN));
 					response_convert(vkey_code, is_down_key, VK_LEFT, user_keyboard.buttons.at(BUTTON_LEFT));
 					response_convert(vkey_code, is_down_key, VK_RIGHT, user_keyboard.buttons.at(BUTTON_RIGHT));
+
+					//Collect PC response to the keyboard
+					response_convert(vkey_code, is_down_key, 'W', user_keyboard.buttons.at(BUTTON_W));
+					response_convert(vkey_code, is_down_key, 'S', user_keyboard.buttons.at(BUTTON_S));
+					response_convert(vkey_code, is_down_key, 'A', user_keyboard.buttons.at(BUTTON_A));
+					response_convert(vkey_code, is_down_key, 'D', user_keyboard.buttons.at(BUTTON_D));
 
 				} break;
 				default:

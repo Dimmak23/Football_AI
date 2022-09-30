@@ -152,6 +152,7 @@
   <ItemGroup>
     <ClInclude Include="game_play.h" />
     <ClInclude Include="game_objects.h" />
+    <ClInclude Include="physics.h" />
     <ClInclude Include="platform_commands.h" />
     <ClInclude Include="typenames.h" />
     <ClInclude Include="utilities.h" />
