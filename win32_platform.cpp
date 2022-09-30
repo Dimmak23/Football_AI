@@ -8,6 +8,7 @@
 
 #include "platform_commands.h"
 #include "game_play.h"
+#include "game_objects.h"
 
 LRESULT window_callback(
 	HWND hwnd,
@@ -163,7 +164,7 @@ int WINAPI WinMain(
 	*/
 	HDC hdc = GetDC(window);
 
-
+	//
 	user_keyboard.buttons.resize(BUTTON_COUNT);
 
 	//variable to measure how much time is spend on a frame
