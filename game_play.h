@@ -10,6 +10,13 @@ static void simulate_game_session(const Input& keys, Render_State& state, const 
 {
 	clear_screen(reinterpret_cast<u32*>(state.memory), state.height, state.width, 0x808080);
 
+	//Draw PLAYER score
+	draw_score(state, player_scored_times/10, 1, true);//draw first digit of the score
+	draw_score(state, player_scored_times, 1);//draw second digit of the score
+	//Draw PC score
+	draw_score(state, pc_scored_times/10, -1, true);//draw first digit of the score
+	draw_score(state, pc_scored_times, -1);//draw second digit of the score
+
 	//draw field
 	draw_field(state);
 
@@ -43,11 +50,13 @@ static void simulate_game_session(const Input& keys, Render_State& state, const 
 			{
 				//throw for PC
 				update_kinematics(ball_m, -1, true);
+				score_is_changed = false;
 			}
 			else
 			{
 				//throw for PLAYER
 				update_kinematics(ball_m, 1, true);
+				score_is_changed = false;
 			}
 			goal_status = false;
 			goal_await = 0.0;
@@ -106,4 +115,5 @@ static void simulate_game_session(const Input& keys, Render_State& state, const 
 		static_cast<float>(state.width), static_cast<float>(state.height),
 		ball.color
 	);
+
 }

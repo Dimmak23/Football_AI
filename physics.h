@@ -6,8 +6,9 @@ static bool goal_status{ false };
 static bool player_scored{ true };
 static float goal_await{ 0.0 };
 static float goal_celebration{ 2.0 };
-static int player_scored_times{};
-static int pc_scored_times{};
+static int player_scored_times{0};
+static int pc_scored_times{0};
+static bool score_is_changed{ false };
 
 #define _down(B) keys.buttons.at(B).is_down
 #define _pressed(B) keys.buttons.at(B).is_down && keys.buttons.at(B).changed
@@ -159,7 +160,14 @@ static void _to_wall_collision(
 			{
 				goal_status = true;
 				player_scored = false;
-				pc_scored_times++;
+
+				//We say that we need to change score
+				if(!score_is_changed)
+				{
+					pc_scored_times++;
+					score_is_changed = true;//we will never change score until NEW ball will be thrown
+				}
+
 				p_move.active_speed_x *= speed_loss;
 				p_move.active_speed_y *= speed_loss;
 			}
@@ -190,7 +198,14 @@ static void _to_wall_collision(
 			{
 				goal_status = true;
 				player_scored = true;
-				player_scored_times++;
+				
+				//We say that we need to change score
+				if (!score_is_changed)
+				{
+					player_scored_times++;
+					score_is_changed = true;//we will never change score until NEW ball will be thrown
+				}
+
 				p_move.active_speed_x *= speed_loss;
 				p_move.active_speed_y *= speed_loss;
 			}

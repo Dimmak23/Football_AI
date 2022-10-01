@@ -5,7 +5,7 @@
 #include "game_objects.h"
 #include "platform_commands.h"
 
-static const float draw_offset{ 0.35 };
+static const float draw_offset{ 0.75 };
 static const float cube_s{ 0.25 };
 
 static struct Render_State
@@ -194,32 +194,216 @@ static void draw_field(Render_State& state)
 	);
 }
 
-static void draw_score(Render_State& state, const int& score, const int& side)
+static void draw_score(Render_State& state, const int& score, const int& side, const bool& two_digits = false)
 {
-	switch(score)
+	float exc{};
+	if ( (side == 1) && two_digits ) exc = 1.5 * draw_offset + 5 * draw_offset;
+	else if (side == 1) exc = 1.5 * draw_offset;
+	else if ((side == -1) && two_digits) exc = - 1.5 * draw_offset;
+	else if (side == -1) exc = - 1.5 * draw_offset + 5 * draw_offset;
+
+	switch(score%10)
 	{
 		case 0:
 		{
-			
-			draw_rectangle(reinterpret_cast<u32*>(state.memory),
-				side * (arena.half_size_x - 1), side * (arena.half_size_y + 1),
-				cube_s, cube_s, state.width, state.height, 0xffffff);
-			draw_rectangle(reinterpret_cast<u32*>(state.memory),
-				side * (arena.half_size_x - 1), side * (arena.half_size_y + 1 + draw_offset),
-				cube_s, cube_s, state.width, state.height, 0xffffff);
-			draw_rectangle(reinterpret_cast<u32*>(state.memory),
-				side * (arena.half_size_x - 1), side * (arena.half_size_y + 1 + 2*draw_offset),
-				cube_s, cube_s, state.width, state.height, 0xffffff);
+			for(int cube_x{}; cube_x < 4; cube_x++)
+			{
+				for (int cube_y{}; cube_y < 5; cube_y++)
+				{
+					if (
+						((0 < cube_x) && (cube_x < 3))
+						&&
+						((0 < cube_y) && (cube_y < 4))
+						) continue;
+					else
+					{
+							draw_rectangle(reinterpret_cast<u32*>(state.memory),
+								(side * (arena.half_size_x - 4.0 - exc) + draw_offset * cube_x), (arena.half_size_y + 2.0 + draw_offset * cube_y),
+								cube_s, cube_s, state.width, state.height, 0xffffff);
+					}
+				}
+			}
 		} break;
-		case 1: {} break;
-		case 2: {} break;
-		case 3: {} break;
-		case 4: {} break;
-		case 5: {} break;
-		case 6: {} break;
-		case 7: {} break;
-		case 8: {} break;
-		case 9: {} break;
+		case 1:
+		{
+			int cube_x{3};
+			for (int cube_y{}; cube_y < 5; cube_y++)
+			{
+				draw_rectangle(reinterpret_cast<u32*>(state.memory),
+					(side * (arena.half_size_x - 4.0 - exc) + draw_offset * cube_x), (arena.half_size_y + 2.0 + draw_offset * cube_y),
+					cube_s, cube_s, state.width, state.height, 0xffffff);
+			}
+		} break;
+		case 2:
+		{
+			for (int cube_x{}; cube_x < 4; cube_x++)
+			{
+				for (int cube_y{}; cube_y < 5; cube_y++)
+				{
+					if (
+						(((cube_x == 1) || (cube_x == 2)) && (cube_y == 3))
+						||
+						(((cube_x == 0) || (cube_x == 1) || (cube_x == 3)) && (cube_y == 2))
+						||
+						(((cube_x == 0) || (cube_x == 2) || (cube_x == 3)) && (cube_y == 1))
+						) continue;
+					else
+					{
+						draw_rectangle(reinterpret_cast<u32*>(state.memory),
+							(side * (arena.half_size_x - 4.0 - exc) + draw_offset * cube_x), (arena.half_size_y + 2.0 + draw_offset * cube_y),
+							cube_s, cube_s, state.width, state.height, 0xffffff);
+					}
+				}
+			}
+		} break;
+		case 3:
+		{
+			for (int cube_x{}; cube_x < 4; cube_x++)
+			{
+				for (int cube_y{}; cube_y < 5; cube_y++)
+				{
+					if (
+						(((cube_x == 0) || (cube_x == 1) || (cube_x == 2)) && (cube_y == 3))
+						||
+						(((cube_x == 0) || (cube_x == 1) || (cube_x == 2)) && (cube_y == 1))
+						) continue;
+					else
+					{
+						draw_rectangle(reinterpret_cast<u32*>(state.memory),
+							(side * (arena.half_size_x - 4.0 - exc) + draw_offset * cube_x), (arena.half_size_y + 2.0 + draw_offset * cube_y),
+							cube_s, cube_s, state.width, state.height, 0xffffff);
+					}
+				}
+			}
+		} break;
+		case 4:
+		{
+			for (int cube_x{}; cube_x < 4; cube_x++)
+			{
+				for (int cube_y{}; cube_y < 5; cube_y++)
+				{
+					if (
+						(((cube_x == 1) || (cube_x == 2)) && (cube_y == 4))
+						||
+						(((cube_x == 1) || (cube_x == 2)) && (cube_y == 3))
+						||
+						(((cube_x == 0) || (cube_x == 1) || (cube_x == 2)) && (cube_y == 1))
+						||
+						(((cube_x == 0) || (cube_x == 1) || (cube_x == 2)) && (cube_y == 0))
+						) continue;
+					else
+					{
+						draw_rectangle(reinterpret_cast<u32*>(state.memory),
+							(side * (arena.half_size_x - 4.0 - exc) + draw_offset * cube_x), (arena.half_size_y + 2.0 + draw_offset * cube_y),
+							cube_s, cube_s, state.width, state.height, 0xffffff);
+					}
+				}
+			}
+		} break;
+		case 5:
+		{
+			for (int cube_x{}; cube_x < 4; cube_x++)
+			{
+				for (int cube_y{}; cube_y < 5; cube_y++)
+				{
+					if (
+						(((cube_x == 1) || (cube_x == 2) || (cube_x == 3)) && (cube_y == 3))
+						||
+						(((cube_x == 0) || (cube_x == 1) || (cube_x == 2)) && (cube_y == 1))
+						) continue;
+					else
+					{
+						draw_rectangle(reinterpret_cast<u32*>(state.memory),
+							(side * (arena.half_size_x - 4.0 - exc) + draw_offset * cube_x), (arena.half_size_y + 2.0 + draw_offset * cube_y),
+							cube_s, cube_s, state.width, state.height, 0xffffff);
+					}
+				}
+			}
+		} break;
+		case 6:
+		{
+			for (int cube_x{}; cube_x < 4; cube_x++)
+			{
+				for (int cube_y{}; cube_y < 5; cube_y++)
+				{
+					if (
+						(((cube_x == 1) || (cube_x == 2) || (cube_x == 3)) && (cube_y == 3))
+						||
+						(((cube_x == 1) || (cube_x == 2)) && (cube_y == 1))
+						) continue;
+					else
+					{
+						draw_rectangle(reinterpret_cast<u32*>(state.memory),
+							(side * (arena.half_size_x - 4.0 - exc) + draw_offset * cube_x), (arena.half_size_y + 2.0 + draw_offset * cube_y),
+							cube_s, cube_s, state.width, state.height, 0xffffff);
+					}
+				}
+			}
+		} break;
+		case 7:
+		{
+			for (int cube_x{}; cube_x < 4; cube_x++)
+			{
+				for (int cube_y{}; cube_y < 5; cube_y++)
+				{
+					if (
+						(((cube_x == 0) || (cube_x == 1) || (cube_x == 2)) && (cube_y == 3))
+						||
+						(((cube_x == 0) || (cube_x == 1) || (cube_x == 2)) && (cube_y == 2))
+						||
+						(((cube_x == 0) || (cube_x == 1) || (cube_x == 2)) && (cube_y == 1))
+						||
+						(((cube_x == 0) || (cube_x == 1) || (cube_x == 2)) && (cube_y == 0))
+						) continue;
+					else
+					{
+						draw_rectangle(reinterpret_cast<u32*>(state.memory),
+							(side * (arena.half_size_x - 4.0 - exc) + draw_offset * cube_x), (arena.half_size_y + 2.0 + draw_offset * cube_y),
+							cube_s, cube_s, state.width, state.height, 0xffffff);
+					}
+				}
+			}
+		} break;
+		case 8:
+		{
+			for (int cube_x{}; cube_x < 4; cube_x++)
+			{
+				for (int cube_y{}; cube_y < 5; cube_y++)
+				{
+					if (
+						(((cube_x == 1) || (cube_x == 2)) && (cube_y == 3))
+						||
+						(((cube_x == 1) || (cube_x == 2)) && (cube_y == 1))
+						) continue;
+					else
+					{
+						draw_rectangle(reinterpret_cast<u32*>(state.memory),
+							(side * (arena.half_size_x - 4.0 - exc) + draw_offset * cube_x), (arena.half_size_y + 2.0 + draw_offset * cube_y),
+							cube_s, cube_s, state.width, state.height, 0xffffff);
+					}
+				}
+			}
+		} break;
+		case 9:
+		{
+			for (int cube_x{}; cube_x < 4; cube_x++)
+			{
+				for (int cube_y{}; cube_y < 5; cube_y++)
+				{
+					if (
+						(((cube_x == 1) || (cube_x == 2)) && (cube_y == 3))
+						||
+						(((cube_x == 0) || (cube_x == 1) || (cube_x == 2)) && (cube_y == 1))
+						) continue;
+					else
+					{
+						draw_rectangle(reinterpret_cast<u32*>(state.memory),
+							(side * (arena.half_size_x - 4.0 - exc) + draw_offset * cube_x), (arena.half_size_y + 2.0 + draw_offset * cube_y),
+							cube_s, cube_s, state.width, state.height, 0xffffff);
+					}
+				}
+			}
+		} break;
 
 	}
 }

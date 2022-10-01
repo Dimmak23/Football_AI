@@ -8,7 +8,7 @@ static const float gate_half_sizeX{ 3.0 };
 static const float gate_half_sizeY{ 10.0 };
 
 static const float speed_mult{ 2.5 };
-static const float speed_loss{ 0.85 };
+static const float speed_loss{ 0.65 };
 
 static const float rocket_init_y{ 0.0 };
 static const float rocket_linit_x{ -75.0 };
@@ -63,4 +63,4 @@ static struct movements
 }
 player_m{ 0.0, 0.0, 4000.0, 28.0, -0.75, 0.0, 0.0, 0.0, 0.0 },
 pc_m{ 0.0, 0.0, 4000.0, 28.0, -0.75, 0.0, 0.0, 0.0, 0.0 },
-ball_m{ 100.0, 0.0, 8000.0, 1.5, -0.98, 100.0, 1000.0, 100.0, 1000.0 };
+ball_m{ 190.0, 0.0, 8000.0, 1.5, -0.98, -190.0, 1000.0, 190.0, 1000.0 };
