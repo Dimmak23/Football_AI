@@ -6,49 +6,55 @@
 #include "utilities.h"
 #include "physics.h"
 
-#include <iostream>
-
-#define _down(B) keys->buttons.at(B).is_down
-#define _pressed(B) keys->buttons.at(B).is_down && keys->buttons.at(B).changed
-#define _released(B) !(keys->buttons.at(B).is_down) && keys->buttons.at(B).changed
-
-static void simulate_game_session(Input* keys, Render_State* state, const float& d_time)
+static void simulate_game_session(const Input& keys, Render_State& state, const float& d_time)
 {
-	clear_screen(reinterpret_cast<u32*>(state->memory), state->height, state->width, 0xff0000);
+	clear_screen(reinterpret_cast<u32*>(state.memory), state.height, state.width, 0x808080);
 
-	//draw arena
-	draw_rectangle(
-		state->memory,
-		arena.initial_position_x, arena.initial_position_y,arena.half_size_x,arena.half_size_y,
-		static_cast<float>(state->width), static_cast<float>(state->height),
-		arena.color
-	);
-
-	//draw center line
-	draw_rectangle(
-		state->memory,
-		center_line.initial_position_x, center_line.initial_position_y, center_line.half_size_x, center_line.half_size_y,
-		static_cast<float>(state->width), static_cast<float>(state->height),
-		center_line.color
-	);
+	//draw field
+	draw_field(state);
 
 	//CALCULATIONS
 
 	//#0
 	//Hold on PLAYER accelerations before getting NEW user response
-	player_m.active_acceleration_x = player_m.null_acceleration;
-	player_m.active_acceleration_y = player_m.null_acceleration;
+	update_kinematics(player_m, 1);
 
 	//Hold on PC accelerations before getting NEW PC response
-	pc_m.active_acceleration_x = pc_m.null_acceleration;
-	pc_m.active_acceleration_y = pc_m.null_acceleration;
+	update_kinematics(pc_m, 1);
 
 	//Hold on BALL accelerations before it colide with something NEW
-	ball_m.active_acceleration_x = ball_m.null_acceleration;
-	ball_m.active_acceleration_y = ball_m.null_acceleration;
+	update_kinematics(ball_m, 1);
+
+	//Check if it is a goal - wait 3 seconds
+	if(goal_status)
+	{
+		goal_await += d_time;
+
+		if (goal_await >= goal_celebration)
+		//THROW new ball
+		{
+			ball_c.pos_x = rocket_init_y;// YES, not mistake, just re-using container with 0.0
+			ball_c.pos_y = rocket_init_y;
+			player_c.pos_x = rocket_rinit_x;
+			player_c.pos_y = rocket_init_y;
+			pc_c.pos_x = rocket_linit_x;
+			pc_c.pos_y = rocket_init_y;
+			if(player_scored)
+			{
+				//throw for PC
+				update_kinematics(ball_m, -1, true);
+			}
+			else
+			{
+				//throw for PLAYER
+				update_kinematics(ball_m, 1, true);
+			}
+			goal_status = false;
+			goal_await = 0.0;
+		}
+	}
 
 	//#1 Need to recalculate BALL colisions before others
-
 	//BALL collisions with PLAYER
 	ball_to_rocket_collision(player_rocket, player_c, player_m);
 	//BALL collisions with PC
@@ -57,24 +63,10 @@ static void simulate_game_session(Input* keys, Render_State* state, const float&
 	//#2 Change acceleration of USER and PC
 	// 
 	//Re-calculate PLAYER acceleration according to the user response
-	if (_down(BUTTON_UP))
-		player_m.active_acceleration_y += player_m.acceleration_step;
-	else if(_down(BUTTON_DOWN))
-		player_m.active_acceleration_y -= player_m.acceleration_step;
-	else if(_down(BUTTON_RIGHT))
-		player_m.active_acceleration_x += player_m.acceleration_step;
-	else if(_down(BUTTON_LEFT))
-		player_m.active_acceleration_x -= player_m.acceleration_step;
+	accelerate_by_user(keys, player_m, 0);
 
 	//Re-calculate PC acceleration according to the PC response
-	if (_down(BUTTON_W))
-		pc_m.active_acceleration_y += pc_m.acceleration_step;
-	else if(_down(BUTTON_S))
-		pc_m.active_acceleration_y -= pc_m.acceleration_step;
-	else if(_down(BUTTON_D))
-		pc_m.active_acceleration_x += pc_m.acceleration_step;
-	else if(_down(BUTTON_A))
-		pc_m.active_acceleration_x -= pc_m.acceleration_step;
+	accelerate_by_user(keys, pc_m, 4);
 
 	//Kinematics re-calculations for PLAYER
 	kinematics(player_c, player_m, d_time);
@@ -93,25 +85,25 @@ static void simulate_game_session(Input* keys, Render_State* state, const float&
 
 	//draw PLAYER rocket
 	draw_rectangle(
-		state->memory,
+		state.memory,
 		player_c.pos_x, player_c.pos_y, player_rocket.half_size_x, player_rocket.half_size_y,
-		static_cast<float>(state->width), static_cast<float>(state->height),
+		static_cast<float>(state.width), static_cast<float>(state.height),
 		player_rocket.color
 	);
 
 	//draw PC rocket
 	draw_rectangle(
-		state->memory,
+		state.memory,
 		pc_c.pos_x, pc_c.pos_y, pc_rocket.half_size_x, pc_rocket.half_size_y,
-		static_cast<float>(state->width), static_cast<float>(state->height),
+		static_cast<float>(state.width), static_cast<float>(state.height),
 		pc_rocket.color
 	);
 
 	//draw the ball
 	draw_rectangle(
-		state->memory,
+		state.memory,
 		ball_c.pos_x, ball_c.pos_y, ball.half_size_x, ball.half_size_y,
-		static_cast<float>(state->width), static_cast<float>(state->height),
+		static_cast<float>(state.width), static_cast<float>(state.height),
 		ball.color
 	);
 }
