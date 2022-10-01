@@ -255,7 +255,7 @@ int WINAPI WinMain(
 			}
 		}
 		//Simulate
-		simulate_game_session(&user_keyboard, &render_state, delta_time);
+		simulate_game_session(user_keyboard, render_state, delta_time);
 
 		//Render
 		/*

@@ -2,16 +2,29 @@
 
 //Positions
 
-struct coordinates
+static const float std_half_width{ 0.1 };
+
+static const float gate_half_sizeX{ 3.0 };
+static const float gate_half_sizeY{ 10.0 };
+
+static const float speed_mult{ 4.0 };
+static const float speed_loss{ 0.65 };
+
+static const float rocket_init_y{ 0.0 };
+static const float rocket_linit_x{ -75.0 };
+static const float rocket_rinit_x{ 75.0 };
+
+static struct coordinates
 {
-	float pos_x, pos_y;
+	float init_x{}, init_y{};
+	float pos_x{}, pos_y{};
 
 }
-player_c{ 80.0, 0.0 },
-pc_c{ -80.0, 0.0 },
-ball_c{ 0.0, 0.0 };
+player_c{ 75.0, 0.0, 75.0, 0.0 },
+pc_c{ -75.0, 0.0, -75.0, 0.0 },
+ball_c{ 0.0, 0.0, 0.0, 0.0 };
 
-struct tools
+static struct tools
 {
 	float half_size_x{}, half_size_y{};
 	u32 color{};
@@ -19,21 +32,24 @@ struct tools
 }
 const player_rocket{ 1.0, 6.0, 0x0a54d0 },
 pc_rocket{ 1.0, 6.0, 0xd31262 },
-ball{ 1.0, 1.0, 0x00ff00 };
+ball{ 1.0, 1.0, 0xff8c00 };
 
-struct util_rectangle
+static struct util_rectangle
 {
 	float initial_position_x{}, initial_position_y{};
+	float line_width{};
 	float half_size_x{}, half_size_y{};
 	u32 color{};
 
 }
-const arena{ 0, 0, 85, 45, 0xffaa33 },
-center_line{ 0, 0, 0.1, 45, 0x000000 };
+const arena{ 0.0, 0.0, 0.0, 82.0, 43.0, 0x0b9a6d },
+center_line{ 0.0, 0.0, 0.0, std_half_width, arena.half_size_y, 0xffffff },
+gate{0.0, 0.0, 0.0, gate_half_sizeX, gate_half_sizeY, 0x000000},
+side_lines{ 0.0, 0.0, std_half_width, arena.half_size_x + 2*std_half_width, arena.half_size_y + 2*std_half_width, 0xffffff};
 
 //Movement
 
-struct movements
+static struct movements
 {
 	const float null_speed{};
 	const float null_acceleration{};
@@ -46,6 +62,6 @@ struct movements
 	float active_acceleration_y{};
 
 }
-player_m{ 0.0, 0.0, 2000.0, 10.0, -0.5, 0.0, 0.0, 0.0, 0.0 },
-pc_m{ 0.0, 0.0, 3000.0, 10.0, -0.5, 0.0, 0.0, 0.0, 0.0 },
-ball_m{ 0.0, 0.0, 2000.0, 1.0, -0.98, 70.0, 1000.0, 70.0, 1000.0 };
+player_m{ 1.0, 0.0, 900.0, 8.0, -0.75, 0.0, 0.0, 0.0, 0.0 },
+pc_m{ 50.0, 0.0, 1000.0, 18.0, -0.75, 0.0, 0.0, 0.0, 0.0 },
+ball_m{ 100.0, 0.0, 0.0, 2.0, -0.98, 100.0, 1000.0, 100.0, 1000.0 };
