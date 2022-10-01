@@ -63,6 +63,38 @@ static void simulate_game_session(const Input& keys, Render_State& state, const 
 		}
 	}
 
+	//Check if there is a glitch
+	if (
+		((ball_c.pos_x - ball.half_size_x) > -arena.half_size_x)
+		&&
+		((ball_c.pos_x + ball.half_size_x) < 0)
+		&&
+		(
+			(pc_m.active_speed_x < 0.01)
+			&&
+			(pc_m.active_speed_y < 0.01)
+		)
+		)
+	{
+		glitch_await += d_time;
+		if (glitch_await >= glitch_time)
+			//THROW new ball
+		{
+			ball_c.pos_x = rocket_init_y;// YES, not mistake, just re-using container with 0.0
+			ball_c.pos_y = rocket_init_y;
+			player_c.pos_x = rocket_rinit_x;
+			player_c.pos_y = rocket_init_y;
+			pc_c.pos_x = rocket_linit_x;
+			pc_c.pos_y = rocket_init_y;
+
+			//throw for PLAYER
+			update_kinematics(ball_m, 1, true);
+			score_is_changed = false;
+
+			glitch_await = 0.0;
+		}
+	}
+
 	//#1 Need to recalculate BALL colisions before others
 	//BALL collisions with PLAYER
 	ball_to_rocket_collision(player_rocket, player_c, player_m);
@@ -75,7 +107,10 @@ static void simulate_game_session(const Input& keys, Render_State& state, const 
 	accelerate_by_user(keys, player_m, 0);
 
 	//Re-calculate PC acceleration according to the PC response
-	accelerate_by_user(keys, pc_m, 4);
+	//accelerate_by_user(keys, pc_m, 4);
+
+	//Turn on AI to generate command of PC movements
+	invoke_ai();
 
 	//Kinematics re-calculations for PLAYER
 	kinematics(player_c, player_m, d_time);

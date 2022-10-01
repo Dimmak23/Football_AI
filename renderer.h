@@ -111,6 +111,47 @@ static void draw_rectangle(void* source_memory, float initPosX, float initPosY, 
 	draw_rectangle_in_pixels(source_memory, initPosX, initPosY, halfSizeX, halfSizeY, maxWidth, maxHeight, color);
 }
 
+static void draw_circle(void* source_memory, float initPosX, float initPosY, float halfSizeX, float halfSizeY, const float& maxWidth, const float& maxHeight, const u32& color)
+{
+	//Change to pixels
+	//Everything multiplied by maxHeight - size of the screen -> when we move width size - nothing change,
+	//when we move height size - game window updates
+	initPosX *= maxHeight * render_scale;
+	halfSizeX *= maxHeight * render_scale;
+	initPosY *= maxHeight * render_scale;
+	halfSizeY *= maxHeight * render_scale;
+
+	//Let's imply logic to center sprite:
+
+	initPosX += maxWidth / 2.f;
+	initPosY += maxHeight / 2.f;
+
+	//Then we sent them to the center of the screen
+	float endX = initPosX + halfSizeX;
+	float endY = initPosY + halfSizeY;
+	initPosX -= halfSizeX;
+	initPosY -= halfSizeY;
+
+	initPosX = clamp(0, initPosX, maxWidth);
+	endX = clamp(0, endX, maxWidth);
+	initPosY = clamp(0, initPosY, maxHeight);
+	endY = clamp(0, endY, maxHeight);
+
+	float shaper{0.01f};
+	const float shaper_step = 1 / (endX - initPosX);
+
+	for (int y{ static_cast<int>(initPosY) }; y < static_cast<int>(endY); y++) {
+		u32* pixel = reinterpret_cast<u32*>(source_memory) + static_cast<int>(initPosX) + y * static_cast<int>(maxWidth);
+		for (float x{ initPosX - shaper * ((endX - initPosX) / 2.f) }; x < (endX - (1 - shaper) * ((endX - initPosX) / 2.f) ); x+=1.f) {
+			*pixel++ = color;
+		}
+		if( y < ( initPosY + static_cast<int>( (endY - initPosY) / 2.f ) ) )
+			shaper += shaper_step;
+		else
+			shaper -= shaper_step;
+	}
+}
+
 static void draw_side_lines(void* source_memory, float initPosX, float initPosY, float line_w, float halfSizeX, float halfSizeY, const float& maxWidth, const float& maxHeight)
 {
 	initPosX *= maxHeight * render_scale;
