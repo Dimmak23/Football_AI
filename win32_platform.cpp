@@ -144,7 +144,7 @@ int WINAPI WinMain(
 	HWND window = CreateWindowA(
 
 		/*lpClassName*/		window_class.lpszClassName,					//A null-terminated string or a class atom created by a previous call to the RegisterClass or RegisterClassEx function.
-		/*lpWindowName*/	"Game Ping-Pong, produced by Dimmak (c).",	//The window name.
+		/*lpWindowName*/	"Football, produced by Dimmak (c).",	//The window name.
 		/*dwStyle*/			WS_OVERLAPPEDWINDOW | WS_VISIBLE,			//The style of the window being created.
 		/*x*/				CW_USEDEFAULT,								//The initial horizontal position of the window. 
 		/*y*/				CW_USEDEFAULT,								//The initial vertical position of the window.

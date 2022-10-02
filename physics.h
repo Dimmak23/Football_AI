@@ -13,6 +13,9 @@ static bool score_is_changed{ false };
 static float glitch_await{ 0.0 };
 static const float glitch_time{ 1.5 };
 
+static bool pc_returned_to_gate{ false };
+static bool pc_moved_to_center{ false };
+
 #define _down(B) keys.buttons.at(B).is_down
 #define _pressed(B) keys.buttons.at(B).is_down && keys.buttons.at(B).changed
 #define _released(B) !(keys.buttons.at(B).is_down) && keys.buttons.at(B).changed
@@ -185,6 +188,13 @@ static void _to_wall_collision(
 		{
 			p_coor.pos_x = (player_or_pc || t_ball) * arena.half_size_x - body.half_size_x;
 			p_move.active_speed_x *= p_move.collision_bounce_coeff;
+		}
+
+		//If it's PC -- we will return to the gate
+		if (!player_or_pc && !t_ball)
+		{
+			//pc_moved_to_center = true;
+			pc_returned_to_gate = false;
 		}
 	}
 	if ((p_coor.pos_x - body.half_size_x) < -(!player_or_pc || t_ball) * arena.half_size_x)
@@ -364,10 +374,32 @@ static void invoke_ai()
 			else 
 	 			pc_m.active_acceleration_y += pc_m.acceleration_step;
 		}
+
+		//We clean boolean container of pc_returned_to_gate
+		pc_returned_to_gate = false;
+		//We clean boolean container of pc_returned_to_gate
+		pc_moved_to_center = false;
 	}
 	//behavior while ball on the PLAYER's field
-	else
+	//and PC already have moved to the center
+	else if (
+		//(ball_c.pos_x >= 0)
+		//&&
+		//(
+		//	//But PC need to move to the it's initial position
+		//	(pc_c.pos_x > (pc_c.init_x + 0.5))
+		//	&&
+		//	(pc_c.pos_x < (pc_c.init_x - 0.5))
+		//	||
+		//	(pc_c.pos_y > (pc_c.init_y + 0.5))
+		//	&&
+		//	(pc_c.pos_y < (pc_c.init_y - 0.5))
+		//)
+		////&&
+		(!pc_returned_to_gate)
+	)
 	{
+
 		if (pc_c.pos_x > pc_c.init_x)
 			pc_m.active_acceleration_x -= 0.5 * pc_m.acceleration_step;
 		else
@@ -394,8 +426,109 @@ static void invoke_ai()
 			pc_m.active_acceleration_x = 0;
 			pc_m.active_speed_y *= 0.01;
 			pc_m.active_acceleration_y = 0;
-
+			pc_returned_to_gate = true;
 		}
 	}
+	//behavior while ball on the PLAYER's field
+	//and PC already have returned to the gate
+	else if(pc_returned_to_gate)
+	{
+		//PC on the left above the ball
+		if ((pc_c.pos_y - pc_rocket.half_size_y) > (ball_c.pos_y + ball.half_size_y))
+		{
+			pc_m.active_acceleration_y -= pc_m.acceleration_step;
+			pc_m.active_acceleration_x += 0.25 * pc_m.acceleration_step;
+		}
+		//PC on the left under the ball
+		else if ((pc_c.pos_y + pc_rocket.half_size_y) < (ball_c.pos_y - ball.half_size_y))
+		{
+			pc_m.active_acceleration_y += pc_m.acceleration_step;
+			pc_m.active_acceleration_x += 0.25 * pc_m.acceleration_step;
+		}
+		//PC rocket cover the ball -- heat by the X axis
+		else
+		{
+			if (player_c.pos_y > 0)
+				//if PLAYER on the UPPER side -- add acceleration to DOWN side
+				pc_m.active_acceleration_y -= 0.5 * pc_m.acceleration_step;
+			else
+				//if PLAYER on the DOWN side -- add acceleration to UPPER side
+				pc_m.active_acceleration_y += 0.5 * pc_m.acceleration_step;
+			//hit by X axis
+			pc_m.active_acceleration_x += pc_m.acceleration_step;
+		}
+	}
+	//behavior while ball on the PLAYER's field
+	//and PC already have moved to the center
+	//else
+	//{
 
+	//}
+}
+
+static void _await_for_goal_celebration(const float& d_t)
+{
+	if (goal_status)
+	{
+		goal_await += d_t;
+
+		if (goal_await >= goal_celebration)
+			//THROW new ball
+		{
+			ball_c.pos_x = rocket_init_y;// YES, not mistake, just re-using container with 0.0
+			ball_c.pos_y = rocket_init_y;
+			player_c.pos_x = rocket_rinit_x;
+			player_c.pos_y = rocket_init_y;
+			pc_c.pos_x = rocket_linit_x;
+			pc_c.pos_y = rocket_init_y;
+			if (player_scored)
+			{
+				//throw for PC
+				update_kinematics(ball_m, -1, true);
+				score_is_changed = false;
+			}
+			else
+			{
+				//throw for PLAYER
+				update_kinematics(ball_m, 1, true);
+				score_is_changed = false;
+			}
+			goal_status = false;
+			goal_await = 0.0;
+		}
+	}
+}
+
+static void _await_for_glitch(const float& d_t)
+{
+	if (
+		((ball_c.pos_x - ball.half_size_x) > -arena.half_size_x)
+		&&
+		((ball_c.pos_x + ball.half_size_x) < 0)
+		&&
+		(
+			(pc_m.active_speed_x < 0.01)
+			&&
+			(pc_m.active_speed_y < 0.01)
+			)
+		)
+	{
+		glitch_await += d_t;
+		if (glitch_await >= glitch_time)
+			//THROW new ball
+		{
+			ball_c.pos_x = rocket_init_y;// YES, not mistake, just re-using container with 0.0
+			ball_c.pos_y = rocket_init_y;
+			player_c.pos_x = rocket_rinit_x;
+			player_c.pos_y = rocket_init_y;
+			pc_c.pos_x = rocket_linit_x;
+			pc_c.pos_y = rocket_init_y;
+
+			//throw for PLAYER
+			update_kinematics(ball_m, 1, true);
+			score_is_changed = false;
+
+			glitch_await = 0.0;
+		}
+	}
 }
