@@ -1,9 +1,9 @@
 #pragma once
 
-#include "utilities.h"
-#include "typenames.h"
-#include "game_objects.h"
-#include "platform_commands.h"
+#include "utilities.hpp"
+#include "typenames.hpp"
+#include "game_objects.hpp"
+#include "platform_commands.hpp"
 
 static const float draw_offset{ 0.75 };
 static const float cube_s{ 0.25 };

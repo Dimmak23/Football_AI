@@ -2,13 +2,13 @@
 
 #include <Windows.h>
 //#include <windef.h>
-#include "renderer.h"
-#include "utilities.h"
-#include "typenames.h"
+#include "renderer.hpp"
+#include "utilities.hpp"
+#include "typenames.hpp"
 
-#include "platform_commands.h"
-#include "game_play.h"
-#include "game_objects.h"
+#include "platform_commands.hpp"
+#include "game_play.hpp"
+#include "game_objects.hpp"
 
 LRESULT window_callback(
 	HWND hwnd,

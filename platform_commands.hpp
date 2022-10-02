@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include "typenames.h"
+#include "typenames.hpp"
 
 struct Button_state
 {

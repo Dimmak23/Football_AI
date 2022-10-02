@@ -1,6 +1,6 @@
 #pragma once
 
-#include "game_objects.h"
+#include "game_objects.hpp"
 
 static bool goal_status{ false };
 static bool player_scored{ true };
