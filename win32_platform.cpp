@@ -205,7 +205,7 @@ int WINAPI WinMain(
 		{
 			u32 vkey_code = static_cast<u32>(message.wParam); //Need to know what key the user press
 			//bool variable checked if it's a down key
-			bool is_down_key = !(message.lParam & (1<<31));
+			bool is_down_key = !(message.lParam & static_cast<LPARAM>(mask));
 			
 			//Let's proceed response from user:
 			switch (message.message)

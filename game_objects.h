@@ -2,17 +2,17 @@
 
 //Positions
 
-static const float std_half_width{ 0.1 };
+static const float std_half_width{ 0.1f };
 
-static const float gate_half_sizeX{ 3.0 };
-static const float gate_half_sizeY{ 10.0 };
+static const float gate_half_sizeX{ 3.0f };
+static const float gate_half_sizeY{ 10.0f };
 
-static const float speed_mult{ 4.0 };
-static const float speed_loss{ 0.65 };
+static const float speed_mult{ 4.0f };
+static const float speed_loss{ 0.65f };
 
-static const float rocket_init_y{ 0.0 };
-static const float rocket_linit_x{ -75.0 };
-static const float rocket_rinit_x{ 75.0 };
+static const float rocket_init_y{ 0.0f };
+static const float rocket_linit_x{ -75.0f };
+static const float rocket_rinit_x{ 75.0f };
 
 static struct coordinates
 {
@@ -62,6 +62,6 @@ static struct movements
 	float active_acceleration_y{};
 
 }
-player_m{ 14.0, 0.0, 1900.0, 25.0, -0.3, 0.0, 0.0, 0.0, 0.0 },
-pc_m{ 5.0, 0.0, 400.0, 6.0, -0.3, 0.0, 0.0, 0.0, 0.0 },
-ball_m{ 100.0, 0.0, 0.0, 1.9, -0.98, 100.0, 1000.0, 100.0, 1000.0 };
+player_m{ 14.0f, 0.0f, 1900.0f, 25.0f, -0.3f, 0.0f, 0.0f, 0.0f, 0.0f },
+pc_m{ 5.0f, 0.0f, 400.0f, 6.0f, -0.3f, 0.0f, 0.0f, 0.0f, 0.0f },
+ball_m{ 100.0f, 0.0f, 0.0f, 1.9f, -0.98f, 100.0f, 1000.0f, 100.0f, 1000.0f };

@@ -3,7 +3,7 @@
 #include <vector>
 #include "typenames.h"
 
-static struct Button_state
+struct Button_state
 {
 	bool is_down{ false };
 	bool changed{ false };

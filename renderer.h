@@ -221,7 +221,7 @@ static void draw_field(Render_State& state)
 	//Draw LEFT gate
 	draw_rectangle(
 		state.memory,
-		-arena.half_size_x-3.25*std_half_width-gate_half_sizeX, gate.initial_position_y, gate.half_size_x, gate.half_size_y,
+		-arena.half_size_x-3.25f*std_half_width-gate_half_sizeX, gate.initial_position_y, gate.half_size_x, gate.half_size_y,
 		static_cast<float>(state.width), static_cast<float>(state.height),
 		gate.color
 	);
@@ -229,7 +229,7 @@ static void draw_field(Render_State& state)
 	//Draw RIGHT gate
 	draw_rectangle(
 		state.memory,
-		arena.half_size_x + 3.25 * std_half_width + gate_half_sizeX, gate.initial_position_y, gate.half_size_x, gate.half_size_y,
+		arena.half_size_x + 3.25f * std_half_width + gate_half_sizeX, gate.initial_position_y, gate.half_size_x, gate.half_size_y,
 		static_cast<float>(state.width), static_cast<float>(state.height),
 		gate.color
 	);
@@ -259,8 +259,8 @@ static void draw_score(Render_State& state, const int& score, const int& side, c
 					else
 					{
 							draw_rectangle(reinterpret_cast<u32*>(state.memory),
-								(side * (arena.half_size_x - 4.0 - exc) + draw_offset * cube_x), (arena.half_size_y + 2.0 + draw_offset * cube_y),
-								cube_s, cube_s, state.width, state.height, 0xffffff);
+								(side * (arena.half_size_x - 4.f - exc) + draw_offset * cube_x), (arena.half_size_y + 2.f + draw_offset * cube_y),
+								cube_s, cube_s, static_cast<const float>(state.width), static_cast<const float>(state.height), 0xffffff);
 					}
 				}
 			}
@@ -271,8 +271,8 @@ static void draw_score(Render_State& state, const int& score, const int& side, c
 			for (int cube_y{}; cube_y < 5; cube_y++)
 			{
 				draw_rectangle(reinterpret_cast<u32*>(state.memory),
-					(side * (arena.half_size_x - 4.0 - exc) + draw_offset * cube_x), (arena.half_size_y + 2.0 + draw_offset * cube_y),
-					cube_s, cube_s, state.width, state.height, 0xffffff);
+					(side * (arena.half_size_x - 4.f - exc) + draw_offset * cube_x), (arena.half_size_y + 2.f + draw_offset * cube_y),
+					cube_s, cube_s, static_cast<const float>(state.width), static_cast<const float>(state.height), 0xffffff);
 			}
 		} break;
 		case 2:
@@ -291,8 +291,8 @@ static void draw_score(Render_State& state, const int& score, const int& side, c
 					else
 					{
 						draw_rectangle(reinterpret_cast<u32*>(state.memory),
-							(side * (arena.half_size_x - 4.0 - exc) + draw_offset * cube_x), (arena.half_size_y + 2.0 + draw_offset * cube_y),
-							cube_s, cube_s, state.width, state.height, 0xffffff);
+							(side * (arena.half_size_x - 4.f - exc) + draw_offset * cube_x), (arena.half_size_y + 2.f + draw_offset * cube_y),
+							cube_s, cube_s, static_cast<const float>(state.width), static_cast<const float>(state.height), 0xffffff);
 					}
 				}
 			}
@@ -311,8 +311,8 @@ static void draw_score(Render_State& state, const int& score, const int& side, c
 					else
 					{
 						draw_rectangle(reinterpret_cast<u32*>(state.memory),
-							(side * (arena.half_size_x - 4.0 - exc) + draw_offset * cube_x), (arena.half_size_y + 2.0 + draw_offset * cube_y),
-							cube_s, cube_s, state.width, state.height, 0xffffff);
+							(side * (arena.half_size_x - 4.f - exc) + draw_offset * cube_x), (arena.half_size_y + 2.f + draw_offset * cube_y),
+							cube_s, cube_s, static_cast<const float>(state.width), static_cast<const float>(state.height), 0xffffff);
 					}
 				}
 			}
@@ -335,8 +335,8 @@ static void draw_score(Render_State& state, const int& score, const int& side, c
 					else
 					{
 						draw_rectangle(reinterpret_cast<u32*>(state.memory),
-							(side * (arena.half_size_x - 4.0 - exc) + draw_offset * cube_x), (arena.half_size_y + 2.0 + draw_offset * cube_y),
-							cube_s, cube_s, state.width, state.height, 0xffffff);
+							(side * (arena.half_size_x - 4.f - exc) + draw_offset * cube_x), (arena.half_size_y + 2.f + draw_offset * cube_y),
+							cube_s, cube_s, static_cast<const float>(state.width), static_cast<const float>(state.height), 0xffffff);
 					}
 				}
 			}
@@ -355,8 +355,8 @@ static void draw_score(Render_State& state, const int& score, const int& side, c
 					else
 					{
 						draw_rectangle(reinterpret_cast<u32*>(state.memory),
-							(side * (arena.half_size_x - 4.0 - exc) + draw_offset * cube_x), (arena.half_size_y + 2.0 + draw_offset * cube_y),
-							cube_s, cube_s, state.width, state.height, 0xffffff);
+							(side * (arena.half_size_x - 4.f - exc) + draw_offset * cube_x), (arena.half_size_y + 2.f + draw_offset * cube_y),
+							cube_s, cube_s, static_cast<const float>(state.width), static_cast<const float>(state.height), 0xffffff);
 					}
 				}
 			}
@@ -375,8 +375,8 @@ static void draw_score(Render_State& state, const int& score, const int& side, c
 					else
 					{
 						draw_rectangle(reinterpret_cast<u32*>(state.memory),
-							(side * (arena.half_size_x - 4.0 - exc) + draw_offset * cube_x), (arena.half_size_y + 2.0 + draw_offset * cube_y),
-							cube_s, cube_s, state.width, state.height, 0xffffff);
+							(side * (arena.half_size_x - 4.f - exc) + draw_offset * cube_x), (arena.half_size_y + 2.f + draw_offset * cube_y),
+							cube_s, cube_s, static_cast<const float>(state.width), static_cast<const float>(state.height), 0xffffff);
 					}
 				}
 			}
@@ -399,8 +399,8 @@ static void draw_score(Render_State& state, const int& score, const int& side, c
 					else
 					{
 						draw_rectangle(reinterpret_cast<u32*>(state.memory),
-							(side * (arena.half_size_x - 4.0 - exc) + draw_offset * cube_x), (arena.half_size_y + 2.0 + draw_offset * cube_y),
-							cube_s, cube_s, state.width, state.height, 0xffffff);
+							(side * (arena.half_size_x - 4.f - exc) + draw_offset * cube_x), (arena.half_size_y + 2.f + draw_offset * cube_y),
+							cube_s, cube_s, static_cast<const float>(state.width), static_cast<const float>(state.height), 0xffffff);
 					}
 				}
 			}
@@ -419,8 +419,8 @@ static void draw_score(Render_State& state, const int& score, const int& side, c
 					else
 					{
 						draw_rectangle(reinterpret_cast<u32*>(state.memory),
-							(side * (arena.half_size_x - 4.0 - exc) + draw_offset * cube_x), (arena.half_size_y + 2.0 + draw_offset * cube_y),
-							cube_s, cube_s, state.width, state.height, 0xffffff);
+							(side * (arena.half_size_x - 4.f - exc) + draw_offset * cube_x), (arena.half_size_y + 2.f + draw_offset * cube_y),
+							cube_s, cube_s, static_cast<const float>(state.width), static_cast<const float>(state.height), 0xffffff);
 					}
 				}
 			}
@@ -439,8 +439,8 @@ static void draw_score(Render_State& state, const int& score, const int& side, c
 					else
 					{
 						draw_rectangle(reinterpret_cast<u32*>(state.memory),
-							(side * (arena.half_size_x - 4.0 - exc) + draw_offset * cube_x), (arena.half_size_y + 2.0 + draw_offset * cube_y),
-							cube_s, cube_s, state.width, state.height, 0xffffff);
+							(side * (arena.half_size_x - 4.f - exc) + draw_offset * cube_x), (arena.half_size_y + 2.f + draw_offset * cube_y),
+							cube_s, cube_s, static_cast<const float>(state.width), static_cast<const float>(state.height), 0xffffff);
 					}
 				}
 			}

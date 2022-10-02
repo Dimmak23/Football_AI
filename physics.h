@@ -179,7 +179,7 @@ static void _to_wall_collision(
 			}
 			if ((p_coor.pos_x + body.half_size_x) > (arena.half_size_x + 3 * std_half_width + 2 * gate.half_size_x))
 			{
-				p_coor.pos_x = arena.half_size_x + 3.25 * std_half_width + 2 * gate.half_size_x - body.half_size_x;
+				p_coor.pos_x = arena.half_size_x + 3.25f * std_half_width + 2 * gate.half_size_x - body.half_size_x;
 				p_move.active_speed_x = 0;
 				p_move.active_speed_y = 0;
 			}
@@ -222,9 +222,9 @@ static void _to_wall_collision(
 				p_move.active_speed_x *= speed_loss;
 				p_move.active_speed_y *= speed_loss;
 			}
-			if ((p_coor.pos_x - body.half_size_x) < -(arena.half_size_x + 3 * std_half_width + 2 * gate.half_size_x))
+			if ((p_coor.pos_x - body.half_size_x) < -(arena.half_size_x + 3.f * std_half_width + 2.f * gate.half_size_x))
 			{
-				p_coor.pos_x = - arena.half_size_x - 3.25 * std_half_width - 2 * gate.half_size_x + body.half_size_x;
+				p_coor.pos_x = - arena.half_size_x - 3.25f * std_half_width - 2.f * gate.half_size_x + body.half_size_x;
 				p_move.active_speed_x = 0;
 				p_move.active_speed_y = 0;
 			}
@@ -261,8 +261,8 @@ static void kinematics(
 
 	//#4
 	//Re-calculate OBJECT position of the rocket
-	p_coor.pos_x += p_move.active_speed_x * d_time + p_move.active_acceleration_x * d_time * d_time * 0.5;
-	p_coor.pos_y += p_move.active_speed_y * d_time + p_move.active_acceleration_y * d_time * d_time * 0.5;
+	p_coor.pos_x += p_move.active_speed_x * d_time + p_move.active_acceleration_x * d_time * d_time * 0.5f;
+	p_coor.pos_y += p_move.active_speed_y * d_time + p_move.active_acceleration_y * d_time * d_time * 0.5f;
 
 	//#5
 	///!! Re-calculate OBJECT speed for the next cycle - only now you can do this
@@ -319,23 +319,23 @@ static void invoke_ai()
 			if ((pc_c.pos_y - pc_rocket.half_size_y) > (ball_c.pos_y + ball.half_size_y))
 			{
 				pc_m.active_acceleration_y -= pc_m.acceleration_step;
-				pc_m.active_acceleration_x += 0.25 * pc_m.acceleration_step;
+				pc_m.active_acceleration_x += 0.25f * pc_m.acceleration_step;
 			}
 			//PC on the left under the ball
 			else if ((pc_c.pos_y + pc_rocket.half_size_y) < (ball_c.pos_y - ball.half_size_y))
 			{
 				pc_m.active_acceleration_y += pc_m.acceleration_step;
-				pc_m.active_acceleration_x += 0.25 * pc_m.acceleration_step;
+				pc_m.active_acceleration_x += 0.25f * pc_m.acceleration_step;
 			}
 			//PC rocket cover the ball -- heat by the X axis
 			else
 			{
 				if(player_c.pos_y>0)
 					//if PLAYER on the UPPER side -- add acceleration to DOWN side
-					pc_m.active_acceleration_y -= 0.5 * pc_m.acceleration_step;
+					pc_m.active_acceleration_y -= 0.5f * pc_m.acceleration_step;
 				else 
 					//if PLAYER on the DOWN side -- add acceleration to UPPER side
-					pc_m.active_acceleration_y += 0.5 * pc_m.acceleration_step;
+					pc_m.active_acceleration_y += 0.5f * pc_m.acceleration_step;
 				//hit by X axis
 				pc_m.active_acceleration_x += pc_m.acceleration_step;
 			}
@@ -401,30 +401,30 @@ static void invoke_ai()
 	{
 
 		if (pc_c.pos_x > pc_c.init_x)
-			pc_m.active_acceleration_x -= 0.5 * pc_m.acceleration_step;
+			pc_m.active_acceleration_x -= 0.5f * pc_m.acceleration_step;
 		else
-			pc_m.active_acceleration_x += 0.5 * pc_m.acceleration_step;
+			pc_m.active_acceleration_x += 0.5f * pc_m.acceleration_step;
 
 		if (pc_c.pos_y > pc_c.init_y)
-			pc_m.active_acceleration_y -= 0.5 * pc_m.acceleration_step;
+			pc_m.active_acceleration_y -= 0.5f * pc_m.acceleration_step;
 		else
-			pc_m.active_acceleration_y += 0.5 * pc_m.acceleration_step;
+			pc_m.active_acceleration_y += 0.5f * pc_m.acceleration_step;
 
 		if (
 			goal_status
 			||
-			(pc_c.pos_x > (pc_c.init_x - 0.5))
+			(pc_c.pos_x > (pc_c.init_x - 0.5f))
 			&&
-			(pc_c.pos_x < (pc_c.init_x + 0.5))
+			(pc_c.pos_x < (pc_c.init_x + 0.5f))
 			&&
-			(pc_c.pos_y < (pc_c.init_y + 0.5))
+			(pc_c.pos_y < (pc_c.init_y + 0.5f))
 			&&
-			(pc_c.pos_y > (pc_c.init_y - 0.5))
+			(pc_c.pos_y > (pc_c.init_y - 0.5f))
 			) 
 		{
-			pc_m.active_speed_x *= 0.01;
+			pc_m.active_speed_x *= 0.01f;
 			pc_m.active_acceleration_x = 0;
-			pc_m.active_speed_y *= 0.01;
+			pc_m.active_speed_y *= 0.01f;
 			pc_m.active_acceleration_y = 0;
 			pc_returned_to_gate = true;
 		}
@@ -437,23 +437,23 @@ static void invoke_ai()
 		if ((pc_c.pos_y - pc_rocket.half_size_y) > (ball_c.pos_y + ball.half_size_y))
 		{
 			pc_m.active_acceleration_y -= pc_m.acceleration_step;
-			pc_m.active_acceleration_x += 0.25 * pc_m.acceleration_step;
+			pc_m.active_acceleration_x += 0.25f * pc_m.acceleration_step;
 		}
 		//PC on the left under the ball
 		else if ((pc_c.pos_y + pc_rocket.half_size_y) < (ball_c.pos_y - ball.half_size_y))
 		{
 			pc_m.active_acceleration_y += pc_m.acceleration_step;
-			pc_m.active_acceleration_x += 0.25 * pc_m.acceleration_step;
+			pc_m.active_acceleration_x += 0.25f * pc_m.acceleration_step;
 		}
 		//PC rocket cover the ball -- heat by the X axis
 		else
 		{
 			if (player_c.pos_y > 0)
 				//if PLAYER on the UPPER side -- add acceleration to DOWN side
-				pc_m.active_acceleration_y -= 0.5 * pc_m.acceleration_step;
+				pc_m.active_acceleration_y -= 0.5f * pc_m.acceleration_step;
 			else
 				//if PLAYER on the DOWN side -- add acceleration to UPPER side
-				pc_m.active_acceleration_y += 0.5 * pc_m.acceleration_step;
+				pc_m.active_acceleration_y += 0.5f * pc_m.acceleration_step;
 			//hit by X axis
 			pc_m.active_acceleration_x += pc_m.acceleration_step;
 		}
