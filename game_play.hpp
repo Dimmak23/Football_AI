@@ -1,10 +1,10 @@
 #pragma once
 
-#include "platform_commands.h"
-#include "renderer.h"
-#include "game_objects.h"
-#include "utilities.h"
-#include "physics.h"
+#include "platform_commands.hpp"
+#include "renderer.hpp"
+#include "game_objects.hpp"
+#include "utilities.hpp"
+#include "physics.hpp"
 
 static void simulate_game_session(const Input& keys, Render_State& state, const float& d_time)
 {

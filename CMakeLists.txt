@@ -11,13 +11,13 @@ add_executable(
 	football_ai 
 	WIN32 #prevent of appearing console when running application
 	win32_platform.cpp
-	game_objects.h
-	game_play.h
-	physics.h
-	platform_commands.h
-	renderer.h
-	typenames.h
-	utilities.h
+	game_objects.hpp
+	game_play.hpp
+	physics.hpp
+	platform_commands.hpp
+	renderer.hpp
+	typenames.hpp
+	utilities.hpp
 	${APP_ICON_RESOURCE_WINDOWS}
 )
 
