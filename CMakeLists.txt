@@ -8,7 +8,8 @@ enable_testing()
 set(APP_ICON_RESOURCE_WINDOWS "${CMAKE_CURRENT_SOURCE_DIR}/icons/application.rc")
 
 add_executable(
-	football_ai
+	football_ai 
+	WIN32 #prevent of appearing console when running application
 	win32_platform.cpp
 	game_objects.h
 	game_play.h
